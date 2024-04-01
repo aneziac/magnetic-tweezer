@@ -1,8 +1,8 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-import T as T
-import N as N
+import magnetic_tweezer.T as T
+import magnetic_tweezer.N as N
 from math import sqrt, cos, floor, pi as π
 
 

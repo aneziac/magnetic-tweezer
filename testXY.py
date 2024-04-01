@@ -1,9 +1,9 @@
 import numpy as np
 import time
-import mm
-import utils
-import T as T
-import UI
+import magnetic_tweezer.micro_manager as mm
+import magnetic_tweezer.utils as utils
+import magnetic_tweezer.T as T
+import magnetic_tweezer.UI as UI
 
 beads = []
 traces = []
