@@ -1,6 +1,10 @@
 import numpy as np
+from bead import Bead
 
-π = np.pi
+
+class BeadCPUTracker:
+    beads: list[Bead]
+
 
 """
 Global params initialization
@@ -18,7 +22,7 @@ def SetParams(r=35, nr=80, nθ=80):
     Nθ = nθ
     freq = np.fft.rfftfreq(L * 2)
     rs = np.tile(np.arange(0, R, R / nr), nθ)
-    θs = np.repeat(np.arange(π / nθ, 2 * π, 2 * π / nθ), nr)
+    θs = np.repeat(np.arange(np.pi / nθ, 2 * np.pi, 2 * np.pi / nθ), nr)
     # relative sample points
     sxs = rs * np.cos(θs)
     sys = rs * np.sin(θs)
@@ -34,7 +38,7 @@ def centerShift(array, it=2):
     res = 0
     d = 0
     for loop in range(it):
-        fft *= np.exp(2j * π * d * freq)
+        fft *= np.exp(2j * np.pi * d * freq)
         co = np.fft.irfft(fft**2)[R - 1 : L + R - 1]
         i = np.argmax(co[R - 30 : R + 30]) + R - 30
         p = np.polynomial.polynomial.polyfit(
@@ -46,7 +50,13 @@ def centerShift(array, it=2):
 
 
 # Cannot deal with boundary, avoid boundary
-def bilinearInterpolate(im, x, y):
+def bilinear_interpolate(im: np.ndarray, x: np.float64, y: np.float64) -> np.float64:
+    """2x2 bilinear interpolation.
+
+    Params
+    ------
+    -
+    The"""
     x0 = x.astype(int)
     y0 = y.astype(int)
     x1 = x0 + 1
@@ -66,7 +76,7 @@ def bilinearInterpolate(im, x, y):
 def profile(beads, img):
     for b in beads:
         b.profile = np.average(
-            bilinearInterpolate(img, sxs + b.x, sys + b.y).reshape((Nθ, Nr)), axis=0
+            bilinear_interpolate(img, sxs + b.x, sys + b.y).reshape((Nθ, Nr)), axis=0
         )
         b.profile = (b.profile - np.mean(b.profile)) / np.std(b.profile)
 
@@ -169,35 +179,10 @@ def XYZ(beads, imgs):
             Ai = np.abs(It)
             χ2 = np.sum((Ri - b.Rc) ** 2, axis=1)
             x = np.argmin(χ2)
-            ΔΦ = (Φi - b.Φc[x - 3 : x + 4]) % (2 * π)
-            np.subtract(ΔΦ, 2 * π, out=ΔΦ, where=ΔΦ > π)
+            ΔΦ = (Φi - b.Φc[x - 3 : x + 4]) % (2 * np.pi)
+            np.subtract(ΔΦ, 2 * np.pi, out=ΔΦ, where=ΔΦ > np.pi)
             ΔΦ = np.average(ΔΦ, axis=1, weights=Ai * b.Ac[x - 3 : x + 4])
             p = np.polynomial.polynomial.polyfit(b.Zc[x - 3 : x + 4], ΔΦ, 1)
             b.z = -p[0] / p[1]
             res[i].append([b.x, b.y, b.z])
     return res
-
-
-"""
-Interface for beads
-@param rf: forget radius
-@param w: window in Fourier space
-"""
-
-
-class Bead:
-    def __init__(self, x, y, rf=10, w=[2, 40]):
-        self.x = x
-        self.y = y
-        self.z = 0
-        self.rf = rf
-        self.w = w
-        # self calibration
-        self.Ic = []  # Intensity Profiles
-        self.Zc = []  # Z values
-
-    def __repr__(self):
-        return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"
-
-    def __str__(self):
-        return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"

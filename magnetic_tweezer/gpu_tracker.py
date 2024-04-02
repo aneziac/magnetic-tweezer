@@ -14,7 +14,7 @@ import numpy as np
 import taichi as ti
 
 ti.init(arch=ti.cpu)
-π = np.pi
+np.pi = np.pi
 
 """
 Global params initialization
@@ -31,7 +31,7 @@ def SetParams(r=35, nr=80, nθ=80, maxn=30, maxm=2, maxz=100):
     Nr = nr
     Nθ = nθ
     Fr = R / Nr
-    Fθ = 2 * π / Nθ
+    Fθ = 2 * np.pi / Nθ
     maxζ = maxn * maxm
     global _im, _p, _I, _J, _Z, _Φ, _A, _R, _cp, _Iq, _x, _cx
     _im = ti.field(dtype=ti.i32, shape=(maxζ, L + 10, L + 10))  # img grid
@@ -190,10 +190,10 @@ def _tilde(n: ti.i32, m: ti.i32):
             _Iq[μ, k] += (
                 _I[μ, r]
                 * (
-                    ti.cos(2 * π * k * (Nr - r - 1) / l)
-                    + ti.cos(2 * π * k * (Nr + r) / l)
+                    ti.cos(2 * np.pi * k * (Nr - r - 1) / l)
+                    + ti.cos(2 * np.pi * k * (Nr + r) / l)
                 )
-                * (0.5 - 0.5 * ti.cos(2 * π * (k - wl) / (wr - wl - 1)))
+                * (0.5 - 0.5 * ti.cos(2 * np.pi * (k - wl) / (wr - wl - 1)))
             )
     for μ, r in ti.ndrange(ζ, Nr):
         _I[μ, r] = 0
@@ -201,8 +201,8 @@ def _tilde(n: ti.i32, m: ti.i32):
     for i, j in ti.ndrange(n, m):
         μ = i * m + j
         for k, r in ti.ndrange((_cp[i, 1], _cp[i, 2]), (_cp[i, 0], Nr)):
-            _I[μ, r] += _Iq[μ, k] * ti.cos(2 * π * k * (r + Nr) / l) / l
-            _J[μ, r] += _Iq[μ, k] * ti.sin(2 * π * k * (r + Nr) / l) / l
+            _I[μ, r] += _Iq[μ, k] * ti.cos(2 * np.pi * k * (r + Nr) / l) / l
+            _J[μ, r] += _Iq[μ, k] * ti.sin(2 * np.pi * k * (r + Nr) / l) / l
 
 
 @ti.func
@@ -210,9 +210,9 @@ def _ΔΦ(μ: ti.i32, i: ti.i32, z: ti.i32) -> ti.f32:
     s = 0.0
     t = 0.0
     for r in range(_cp[i, 0], Nr):
-        Δ = (ti.atan2(_J[μ, r], _I[μ, r]) - _Φ[i, z, r]) % (2 * π)
-        if Δ > π:
-            Δ -= 2 * π
+        Δ = (ti.atan2(_J[μ, r], _I[μ, r]) - _Φ[i, z, r]) % (2 * np.pi)
+        if Δ > np.pi:
+            Δ -= 2 * np.pi
         w = ti.sqrt(_I[μ, r] ** 2 + _J[μ, r] ** 2) * _A[i, z, r]
         t += w
         s += w * Δ
@@ -433,28 +433,3 @@ def XYZ(beads, imgs):
             b.z = p[μ][2]
             res[i].append([b.x, b.y, b.z])
     return res
-
-
-"""
-Interface for beads
-@param rf: forget radius
-@param w: window in Fourier space
-"""
-
-
-class Bead:
-    def __init__(self, x, y, rf=10, w=[2, 40]):
-        self.x = x
-        self.y = y
-        self.z = 0
-        self.rf = rf
-        self.w = w
-        # self calibration
-        self.Ic = []  # Intensity Profiles
-        self.Zc = []  # Z values
-
-    def __repr__(self):
-        return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"
-
-    def __str__(self):
-        return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"
