@@ -1,6 +1,6 @@
 import numpy as np
 import time
-import magnetic_tweezer.micro_manager as mm
+import magnetic_tweezer.micro_manager as micro_manager
 import magnetic_tweezer.utils as utils
 import magnetic_tweezer.T as T
 import magnetic_tweezer.UI as UI
@@ -8,18 +8,18 @@ import magnetic_tweezer.UI as UI
 beads = []
 traces = []
 
-beads = UI.SelectBeads(T, mm.Get)
+beads = UI.SelectBeads(T, micro_manager.Get)
 print(beads)
 n = len(beads)
 for i in range(n):
     traces.append([])
 
-T.XY(beads, [mm.Get()])
+T.XY(beads, [micro_manager.Get()])
 
 ts = []
 start = time.time()
 for loop in range(1000):
-    img = mm.Get()
+    img = micro_manager.Get()
     time.sleep(0.02)
     ts.append(time.time() - start)
     T.XY(beads, [img])

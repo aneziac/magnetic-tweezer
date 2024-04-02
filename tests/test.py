@@ -7,7 +7,7 @@ import utils
 import magnetic_tweezer.acs as acs
 import matplotlib.pyplot as plt
 
-acs.To(39)
+acs.magnet_height_to(39)
 z0 = micro_manager.GetZ()
 
 beads = UI.SelectBeads(T, micro_manager.Get)
@@ -34,7 +34,7 @@ plt.show()
 
 data = []
 for magneticHeight in np.arange(39, 25, -0.5):
-    acs.To(magneticHeight)
+    acs.magnet_height_to(magneticHeight)
     micro_manager.SetZ(z0 + δz)
     print(magneticHeight)
     time.sleep(1)
@@ -52,7 +52,7 @@ for h in range(len(data)):
             one.append(trace[i][j][2])
         allTrace.append(one)
 allTrace = np.array(allTrace)
-acs.To(39)
+acs.magnet_height_to(39)
 
 plt.plot((allTrace[:, 2] - allTrace[:, 5])[:])
 plt.show()

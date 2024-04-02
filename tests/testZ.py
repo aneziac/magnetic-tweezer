@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import mm
+import magnetic_tweezer.micro_manager as micro_manager
 import utils
-import T as T
+import magnetic_tweezer.T as T
 import UI
 
-z0 = mm.GetZ()
+z0 = micro_manager.GetZ()
 
-beads = UI.SelectBeads(T, mm.Get)
+beads = UI.SelectBeads(T, micro_manager.Get)
 
-UI.Calibrate(beads, T, mm.Get, mm.GetZ, mm.SetZ)
+UI.Calibrate(beads, T, micro_manager.Get, micro_manager.GetZ, micro_manager.SetZ)
 
 for i in range(0, len(beads)):
     beads[i].rf = 20  # reference beads
@@ -20,9 +20,9 @@ T.ComputeCalibration(beads)
 #     utils.PlotCalibration(beads[i])
 
 δz = 2000
-mm.SetZ(z0 + δz)
+micro_manager.SetZ(z0 + δz)
 
-trace = UI.Track(beads, T, mm.Get, 1000)
+trace = UI.Track(beads, T, micro_manager.Get, 1000)
 Δt = trace[0] - trace[1]
 t = utils.TraceAxis(Δt)
 print(np.std(t))
@@ -40,10 +40,10 @@ plt.show()
 zts = np.arange(500, 9500, 50)
 z0s = []
 for z in zts:
-    mm.SetZ(z0 + z)
+    micro_manager.SetZ(z0 + z)
     time.sleep(0.3)
     for t in range(100):
-        img = mm.Get()
+        img = micro_manager.Get()
         T.XYZ(beads, [img])
         z0s.append(beads[0].z)
 
@@ -65,4 +65,4 @@ plt.xlabel("Z (nm)")
 plt.ylabel("Bias (nm)")
 plt.show()
 
-mm.SetZ(z0)
+micro_manager.SetZ(z0)
