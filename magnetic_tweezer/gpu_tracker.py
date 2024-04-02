@@ -35,25 +35,25 @@ def SetParams(r=35, nr=80, nθ=80, maxn=30, maxm=2, maxz=100):
     maxζ = maxn * maxm
     global _im, _p, _I, _J, _Z, _Φ, _A, _R, _cp, _Iq, _x, _cx
     _im = ti.field(dtype=ti.i32, shape=(maxζ, L + 10, L + 10))  # img grid
-    _p = ti.field(dtype=ti.f32, shape=(maxζ, 3))  # points
-    _I = ti.field(dtype=ti.f32, shape=(maxζ, Nr))  # intensity
-    _J = ti.field(dtype=ti.f32, shape=(maxζ, Nr))  # imaginary part
-    _Z = ti.field(dtype=ti.f32, shape=(maxz))  # calibration z
-    _Φ = ti.field(dtype=ti.f32, shape=(maxn, maxz, Nr))  # calibration angle
-    _A = ti.field(dtype=ti.f32, shape=(maxn, maxz, Nr))  # calibration amplitude
-    _R = ti.field(dtype=ti.f32, shape=(maxn, maxz, Nr))  # calibration real
+    _p = ti.field(dtype=ti.f64, shape=(maxζ, 3))  # points
+    _I = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # intensity
+    _J = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # imaginary part
+    _Z = ti.field(dtype=ti.f64, shape=(maxz))  # calibration z
+    _Φ = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration angle
+    _A = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration amplitude
+    _R = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration real
     _cp = ti.field(dtype=ti.i32, shape=(maxn, 3))  # calibration params
     # caches
-    _Iq = ti.field(dtype=ti.f32, shape=(maxζ, Nr))  # fourier space
-    _x = ti.field(dtype=ti.f32, shape=(maxζ, L))
-    _cx = ti.field(dtype=ti.f32, shape=(maxζ, 50))
+    _Iq = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # fourier space
+    _x = ti.field(dtype=ti.f64, shape=(maxζ, L))
+    _cx = ti.field(dtype=ti.f64, shape=(maxζ, 50))
 
 
 SetParams()
 
 
 @ti.func  # Bilinear Interpolate
-def _BI(μ: ti.i32, x: ti.f32, y: ti.f32) -> ti.f32:
+def _BI(μ: ti.i32, x: ti.f64, y: ti.f64) -> ti.f64:
     x0 = int(x)
     y0 = int(y)
     x1 = x0 + 1
@@ -71,7 +71,7 @@ def _BI(μ: ti.i32, x: ti.f32, y: ti.f32) -> ti.f32:
 
 
 @ti.func  # fit a parabola
-def _fitCenter(y0: ti.f32, y1: ti.f32, y2: ti.f32, y3: ti.f32, y4: ti.f32) -> ti.f32:
+def _fitCenter(y0: ti.f64, y1: ti.f64, y2: ti.f64, y3: ti.f64, y4: ti.f64) -> ti.f64:
     a = (2 * y0 - y1 - 2 * y2 - y3 + 2 * y4) / 14
     b = -0.2 * y0 - 0.1 * y1 + 0.1 * y3 + 0.2 * y4
     return -b / a / 2
@@ -79,17 +79,17 @@ def _fitCenter(y0: ti.f32, y1: ti.f32, y2: ti.f32, y3: ti.f32, y4: ti.f32) -> ti
 
 @ti.func  # fit a line
 def _fitZero(
-    x1: ti.f32,
-    x2: ti.f32,
-    x3: ti.f32,
-    x4: ti.f32,
-    x5: ti.f32,
-    y1: ti.f32,
-    y2: ti.f32,
-    y3: ti.f32,
-    y4: ti.f32,
-    y5: ti.f32,
-) -> ti.f32:
+    x1: ti.f64,
+    x2: ti.f64,
+    x3: ti.f64,
+    x4: ti.f64,
+    x5: ti.f64,
+    y1: ti.f64,
+    y2: ti.f64,
+    y3: ti.f64,
+    y4: ti.f64,
+    y5: ti.f64,
+) -> ti.f64:
     a = 5
     c = x1 + x2 + x3 + x4 + x5
     d = x1 * x1 + x2 * x2 + x3 * x3 + x4 * x4 + x5 * x5
@@ -206,7 +206,7 @@ def _tilde(n: ti.i32, m: ti.i32):
 
 
 @ti.func
-def _ΔΦ(μ: ti.i32, i: ti.i32, z: ti.i32) -> ti.f32:
+def _ΔΦ(μ: ti.i32, i: ti.i32, z: ti.i32) -> ti.f64:
     s = 0.0
     t = 0.0
     for r in range(_cp[i, 0], Nr):
