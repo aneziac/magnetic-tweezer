@@ -1,5 +1,5 @@
 import numpy as np
-from bead import Bead
+from magnetic_tweezer.bead import Bead
 
 
 class BeadCPUTracker:
@@ -51,25 +51,47 @@ def centerShift(array, it=2):
 
 # Cannot deal with boundary, avoid boundary
 def bilinear_interpolate(im: np.ndarray, x: np.float64, y: np.float64) -> np.float64:
-    """2x2 bilinear interpolation.
+    r"""2x2 bilinear interpolation. Takes a point in an array
+    and samples the 4 surrounding pixels to estimate the value at that point.
+    In particular, for $x, y \in [0, 1]$, the bilinear interpolation is given by
+    $$
+    f(x, y) \approx \begin{bmatrix} 1 - x & x \end{bmatrix}
+    \begin{bmatrix}
+        f(0, 0) & f(0, 1) \\\
+        f(1, 0) & f(1, 1)
+    \end{bmatrix}
+    \begin{bmatrix}
+        1 - y \\\
+        y
+    \end{bmatrix}.
+    $$
 
-    Params
-    ------
-    -
-    The"""
+    Args:
+        im (np.ndarray): Array to sample from
+        x (np.float64): x coordinate to sample
+        y (np.float64): y coordinate to sample
+
+    Returns:
+        np.float64: Result of the sampling
+    """
+    # x and y coordinates of the samples
     x0 = x.astype(int)
     y0 = y.astype(int)
     x1 = x0 + 1
     y1 = y0 + 1
+
+    # relative distances to the pixels
     xu = x1 - x
     xl = x - x0
     yu = y1 - y
     yl = y - y0
+
+    # perform interpolation
     return (
-        xu * yu * im[y0, x0]
-        + xu * yl * im[y1, x0]
-        + xl * yu * im[y0, x1]
-        + xl * yl * im[y1, x1]
+        xu * yu * im[y0, x0] +
+        xu * yl * im[y1, x0] +
+        xl * yu * im[y0, x1] +
+        xl * yl * im[y1, x1]
     )
 
 
