@@ -18,6 +18,3 @@ class Bead:
 
     def __repr__(self):
         return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"
-
-    def __str__(self):
-        return f"Bead({self.x}, {self.y}, {self.z}, rf={self.rf}, w=[{self.w[0]}, {self.w[1]}])"
