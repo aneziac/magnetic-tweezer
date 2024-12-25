@@ -1,5 +1,5 @@
 import time
-import magnetic_tweezer.T as T
+import magnetic_tweezer.gpu_tracker as gpu_tracker
 import UI
 import numpy as np
 import magnetic_tweezer.micro_manager as micro_manager
@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 acs.magnet_height_to(39)
 z0 = micro_manager.GetZ()
 
-beads = UI.SelectBeads(T, micro_manager.Get)
+beads = UI.SelectBeads(gpu_tracker, micro_manager.Get)
 
-UI.Calibrate(beads, T, micro_manager.Get, micro_manager.GetZ, micro_manager.SetZ)
+UI.Calibrate(beads, gpu_tracker, micro_manager.Get, micro_manager.GetZ, micro_manager.SetZ)
 
 for i in range(1, len(beads)):
     beads[i].rf = 14  # reference beads
-T.ComputeCalibration(beads)
+gpu_tracker.ComputeCalibration(beads)
 
 for i in range(len(beads)):
     utils.PlotCalibration(beads[i])
@@ -24,7 +24,7 @@ for i in range(len(beads)):
 δz = 4000
 micro_manager.SetZ(z0 + δz)
 
-trace = UI.Track(beads, T, micro_manager.Get, 500)
+trace = UI.Track(beads, gpu_tracker, micro_manager.Get, 500)
 utils.PlotXY(trace[0])
 plt.plot(utils.TraceAxis(trace[0]) - utils.TraceAxis(trace[1]))
 plt.xlabel("Z(nm)")
@@ -39,7 +39,7 @@ for magneticHeight in np.arange(39, 25, -0.5):
     print(magneticHeight)
     time.sleep(1)
     micro_manager.Get()
-    trace = UI.Track(beads, T, micro_manager.Get, 500)
+    trace = UI.Track(beads, gpu_tracker, micro_manager.Get, 500)
     data.append(trace)
 allTrace = []
 for h in range(len(data)):

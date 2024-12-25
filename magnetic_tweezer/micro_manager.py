@@ -10,6 +10,7 @@ import atexit
 import numpy as np
 import time
 from magnetic_tweezer.units import Micrometer, Nanometer
+import logging
 
 
 class MicroManagerInterface:
@@ -20,7 +21,7 @@ class MicroManagerInterface:
         This should only be done once."""
 
         self._core = Core()
-        self.microscope_model = microscope_model
+        self.microscope_model: str = microscope_model
         """Type of microscope used"""
 
         self.version_info: str = str(self._core.get_version_info())
@@ -30,21 +31,21 @@ class MicroManagerInterface:
         self._core.snap_image()
         tagged_image = self._core.get_tagged_image()
 
-        self.height = tagged_image.tags["Height"]
+        self.height: int = tagged_image.tags["Height"]
         """Height of microscope images"""
 
-        self.width = tagged_image.tags["Width"]
+        self.width: int = tagged_image.tags["Width"]
         """Width of microscope images"""
 
-        print("Mi(Py)croManager Initializing...")
-        print(f"Acquisition Size: Width = {self.width}, Height = {self.height}")
+        logging.info("Mi(Py)croManager Initializing...")
+        logging.info(f"Acquisition Size: Width = {self.width}, Height = {self.height}")
 
         self._core.start_continuous_sequence_acquisition(1)
         time.sleep(1)
 
     def __del__(self):
         self._core.stop_sequence_acquisition()
-        print("Mi(Py)croManager Exiting...")
+        logging.info("Mi(Py)croManager Exiting...")
 
     def get_image(self) -> np.ndarray:
         """Get the latest microscope image"""
@@ -67,5 +68,5 @@ class MicroManagerInterface:
 if __name__ == '__main__':
     micro_manager = MicroManagerInterface()
     atexit.register(micro_manager.__del__)  # just in case - maybe not required
-    print(f'Version Info: {micro_manager.version_info}')
-    print(f'Current Z Value: {micro_manager.z}')
+    logging.info(f'Version Info: {micro_manager.version_info}')
+    logging.info(f'Current Z Value: {micro_manager.z}')

@@ -1,5 +1,7 @@
 # magnetic-tweezer
 
+pdoc --html --config latex_math=True --force magnetic_tweezer/cpu_tracker.py
+
 A Python library to track beads in magnetic tweezer experiments
 
 ## Get started

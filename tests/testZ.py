@@ -3,18 +3,18 @@ import matplotlib.pyplot as plt
 import time
 import magnetic_tweezer.micro_manager as micro_manager
 import utils
-import magnetic_tweezer.T as T
+import magnetic_tweezer.gpu_tracker as gpu_tracker
 import UI
 
 z0 = micro_manager.GetZ()
 
-beads = UI.SelectBeads(T, micro_manager.Get)
+beads = UI.SelectBeads(gpu_tracker, micro_manager.Get)
 
-UI.Calibrate(beads, T, micro_manager.Get, micro_manager.GetZ, micro_manager.SetZ)
+UI.Calibrate(beads, gpu_tracker, micro_manager.Get, micro_manager.GetZ, micro_manager.SetZ)
 
 for i in range(0, len(beads)):
     beads[i].rf = 20  # reference beads
-T.ComputeCalibration(beads)
+gpu_tracker.ComputeCalibration(beads)
 
 # for i in range(len(beads)):
 #     utils.PlotCalibration(beads[i])
@@ -22,7 +22,7 @@ T.ComputeCalibration(beads)
 δz = 2000
 micro_manager.SetZ(z0 + δz)
 
-trace = UI.Track(beads, T, micro_manager.Get, 1000)
+trace = UI.Track(beads, gpu_tracker, micro_manager.Get, 1000)
 Δt = trace[0] - trace[1]
 t = utils.TraceAxis(Δt)
 print(np.std(t))
@@ -44,7 +44,7 @@ for z in zts:
     time.sleep(0.3)
     for t in range(100):
         img = micro_manager.Get()
-        T.XYZ(beads, [img])
+        gpu_tracker.XYZ(beads, [img])
         z0s.append(beads[0].z)
 
 xs = []

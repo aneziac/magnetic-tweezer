@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>magnetic_tweezer.gpu_tracker API documentation</title>
+<meta name="description" content="Notations:
+n: number of beads
+m: number of images in one packet
+ζ: total number, = n * m
+i: index of bead
+j: index of image
+μ: combined index, = i * m …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>magnetic_tweezer.gpu_tracker</code></h1>
+</header>
+<section id="section-intro">
+<p>Notations:
+n: number of beads
+m: number of images in one packet
+ζ: total number, = n * m
+i: index of bead
+j: index of image
+μ: combined index, = i * m + j
+tiFunc: Taichi kernels, called in Python scope
+_func: Taichi functions, called in Taichi scope</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Notations:
+n: number of beads
+m: number of images in one packet
+ζ: total number, = n * m
+i: index of bead
+j: index of image
+μ: combined index, = i * m + j
+tiFunc: Taichi kernels, called in Python scope
+_func: Taichi functions, called in Taichi scope
+&#34;&#34;&#34;
+
+import numpy as np
+import taichi as ti
+
+ti.init(arch=ti.cpu)
+np.pi = np.pi
+
+&#34;&#34;&#34;
+Global params initialization
+@param r: expected bead radius in pixel
+@param nθ: sampling number in polar direction
+@param nr: sampling number in radial direction
+&#34;&#34;&#34;
+
+
+def SetParams(r=35, nr=80, nθ=80, maxn=30, maxm=2, maxz=100):
+    global R, L, Nr, Nθ, Fr, Fθ
+    R = r
+    L = r * 2
+    Nr = nr
+    Nθ = nθ
+    Fr = R / Nr
+    Fθ = 2 * np.pi / Nθ
+    maxζ = maxn * maxm
+    global _im, _p, _I, _J, _Z, _Φ, _A, _R, _cp, _Iq, _x, _cx
+    _im = ti.field(dtype=ti.i32, shape=(maxζ, L + 10, L + 10))  # img grid
+    _p = ti.field(dtype=ti.f64, shape=(maxζ, 3))  # points
+    _I = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # intensity
+    _J = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # imaginary part
+    _Z = ti.field(dtype=ti.f64, shape=(maxz))  # calibration z
+    _Φ = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration angle
+    _A = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration amplitude
+    _R = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration real
+    _cp = ti.field(dtype=ti.i32, shape=(maxn, 3))  # calibration params
+    # caches
+    _Iq = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # fourier space
+    _x = ti.field(dtype=ti.f64, shape=(maxζ, L))
+    _cx = ti.field(dtype=ti.f64, shape=(maxζ, 50))
+
+
+SetParams()
+
+
+@ti.func  # Bilinear Interpolate
+def _BI(μ: ti.i32, x: ti.f64, y: ti.f64) -&gt; ti.f64:
+    x0 = int(x)
+    y0 = int(y)
+    x1 = x0 + 1
+    y1 = y0 + 1
+    xu = x1 - x
+    xl = x - x0
+    yu = y1 - y
+    yl = y - y0
+    return (
+        xu * yu * _im[μ, y0, x0]
+        + xu * yl * _im[μ, y1, x0]
+        + xl * yu * _im[μ, y0, x1]
+        + xl * yl * _im[μ, y1, x1]
+    )
+
+
+@ti.func  # fit a parabola
+def _fitCenter(y0: ti.f64, y1: ti.f64, y2: ti.f64, y3: ti.f64, y4: ti.f64) -&gt; ti.f64:
+    a = (2 * y0 - y1 - 2 * y2 - y3 + 2 * y4) / 14
+    b = -0.2 * y0 - 0.1 * y1 + 0.1 * y3 + 0.2 * y4
+    return -b / a / 2
+
+
+@ti.func  # fit a line
+def _fitZero(
+    x1: ti.f64,
+    x2: ti.f64,
+    x3: ti.f64,
+    x4: ti.f64,
+    x5: ti.f64,
+    y1: ti.f64,
+    y2: ti.f64,
+    y3: ti.f64,
+    y4: ti.f64,
+    y5: ti.f64,
+) -&gt; ti.f64:
+    a = 5
+    c = x1 + x2 + x3 + x4 + x5
+    d = x1 * x1 + x2 * x2 + x3 * x3 + x4 * x4 + x5 * x5
+    D = a * d - c * c
+    e = y1 + y2 + y3 + y4 + y5
+    f = x1 * y1 + x2 * y2 + x3 * y3 + x4 * y4 + x5 * y5
+    b = (e * d - c * f) / D
+    k = (f * a - e * c) / D
+    return -b / k
+
+
+@ti.func
+def _cX(ζ: ti.i32, d: ti.i32):  # d = 0(X)|1(Y)
+    for μ, k in ti.ndrange(ζ, 50):
+        _cx[μ, k] = 0
+    # normalize
+    for μ, l in ti.ndrange(ζ, L):  # mean
+        _cx[μ, 0] += _x[μ, l] / L
+    for μ, l in ti.ndrange(ζ, L):  # std
+        _cx[μ, 1] += (_x[μ, l] - _cx[μ, 0]) ** 2 / L
+    for μ in ti.ndrange(ζ):
+        _cx[μ, 1] = ti.sqrt(_cx[μ, 1])
+    for μ, l in ti.ndrange(ζ, L):
+        _x[μ, l] = (_x[μ, l] - _cx[μ, 0]) / _cx[μ, 1]
+    # correlate
+    for μ in ti.ndrange(ζ):
+        _cx[μ, 0] = 0
+        _cx[μ, 1] = 0
+    for μ, k, l in ti.ndrange(ζ, 50, L):
+        m = k - l + L - 26
+        if m &gt; 0 and m &lt; L:
+            _cx[μ, k] += _x[μ, l] * _x[μ, m]
+    for μ in range(ζ):  # find max in correlate and fit
+        x = 25
+        for t in range(50):
+            if _cx[μ, t] &gt; _cx[μ, x]:
+                x = t
+        _p[μ, d] += (
+            x
+            - 25
+            + _fitCenter(
+                _cx[μ, x - 2], _cx[μ, x - 1], _cx[μ, x], _cx[μ, x + 1], _cx[μ, x + 2]
+            )
+        ) / 2
+
+
+@ti.func
+def _XY(ζ: ti.i32):
+    for μ, t in ti.ndrange(ζ, (5, L + 5)):  # sample slice x
+        _x[μ, t - 5] = (
+            _BI(μ, t + _p[μ, 0], R + 4.3)
+            + _BI(μ, t + _p[μ, 0], R + 5)
+            + _BI(μ, t + _p[μ, 0], R + 5.7)
+        )
+    _cX(ζ, 0)
+    for μ, t in ti.ndrange(ζ, (5, L + 5)):  # sample slice y
+        _x[μ, t - 5] = (
+            _BI(μ, R + 4.3, t + _p[μ, 1])
+            + _BI(μ, R + 5, t + _p[μ, 1])
+            + _BI(μ, R + 5.7, t + _p[μ, 1])
+        )
+    _cX(ζ, 1)
+
+
+@ti.func
+def _profile(ζ: ti.i32):
+    for μ, r in ti.ndrange(ζ, Nr):
+        _I[μ, r] = 0
+    for μ, r, θ in ti.ndrange(ζ, Nr, Nθ):  # intensity profile
+        x = R + 5 + _p[μ, 0] + Fr * r * ti.cos(θ * Fθ)
+        y = R + 5 + _p[μ, 1] + Fr * r * ti.sin(θ * Fθ)
+        _I[μ, r] += _BI(μ, x, y) / Nθ
+    # normalize
+    for μ in ti.ndrange(ζ):
+        _cx[μ, 0] = 0  # mean
+        _cx[μ, 1] = 0  # std
+    for μ, r in ti.ndrange(ζ, Nr):
+        _cx[μ, 0] += _I[μ, r] / Nr
+    for μ, r in ti.ndrange(ζ, Nr):
+        _cx[μ, 1] += (_I[μ, r] - _cx[μ, 0]) ** 2 / Nr
+    for μ in ti.ndrange(ζ):
+        _cx[μ, 1] = ti.sqrt(_cx[μ, 1])
+    for μ, r in ti.ndrange(ζ, Nr):
+        _I[μ, r] = (_I[μ, r] - _cx[μ, 0]) / _cx[μ, 1]
+
+
+@ti.func
+def _tilde(n: ti.i32, m: ti.i32):
+    l = 2 * Nr
+    ζ = n * m
+    for μ, k in ti.ndrange(ζ, Nr):
+        _Iq[μ, k] = 0
+    for i, j, r in ti.ndrange(n, m, Nr):
+        wl = _cp[i, 1]
+        wr = _cp[i, 2]
+        μ = i * m + j
+        for k in range(wl, wr):  # Fourier transform with window
+            _Iq[μ, k] += (
+                _I[μ, r]
+                * (
+                    ti.cos(2 * np.pi * k * (Nr - r - 1) / l)
+                    + ti.cos(2 * np.pi * k * (Nr + r) / l)
+                )
+                * (0.5 - 0.5 * ti.cos(2 * np.pi * (k - wl) / (wr - wl - 1)))
+            )
+    for μ, r in ti.ndrange(ζ, Nr):
+        _I[μ, r] = 0
+        _J[μ, r] = 0
+    for i, j in ti.ndrange(n, m):
+        μ = i * m + j
+        for k, r in ti.ndrange((_cp[i, 1], _cp[i, 2]), (_cp[i, 0], Nr)):
+            _I[μ, r] += _Iq[μ, k] * ti.cos(2 * np.pi * k * (r + Nr) / l) / l
+            _J[μ, r] += _Iq[μ, k] * ti.sin(2 * np.pi * k * (r + Nr) / l) / l
+
+
+@ti.func
+def _ΔΦ(μ: ti.i32, i: ti.i32, z: ti.i32) -&gt; ti.f64:
+    s = 0.0
+    t = 0.0
+    for r in range(_cp[i, 0], Nr):
+        Δ = (ti.atan2(_J[μ, r], _I[μ, r]) - _Φ[i, z, r]) % (2 * np.pi)
+        if Δ &gt; np.pi:
+            Δ -= 2 * np.pi
+        w = ti.sqrt(_I[μ, r] ** 2 + _J[μ, r] ** 2) * _A[i, z, r]
+        t += w
+        s += w * Δ
+    return s / t
+
+
+@ti.func
+def __Z(n: ti.i32, m: ti.i32, nz: ti.i32):
+    for i, j in ti.ndrange(n, m):
+        μ = i * m + j
+        rf = _cp[i, 0]
+        z0 = 0
+        minχ2 = 999999999.0
+        for z in range(nz):
+            χ2 = 0.0
+            for r in range(rf, Nr):
+                χ2 += (_I[μ, r] - _R[i, z, r]) ** 2
+            if χ2 &lt; minχ2:
+                minχ2 = χ2
+                z0 = z
+        _p[μ, 2] = _fitZero(
+            _Z[z0 - 2],
+            _Z[z0 - 1],
+            _Z[z0],
+            _Z[z0 + 1],
+            _Z[z0 + 2],
+            _ΔΦ(μ, i, z0 - 2),
+            _ΔΦ(μ, i, z0 - 1),
+            _ΔΦ(μ, i, z0),
+            _ΔΦ(μ, i, z0 + 1),
+            _ΔΦ(μ, i, z0 + 2),
+        )
+
+
+@ti.kernel  # XY &amp; profile
+def tiProfile(ζ: ti.i32):
+    _XY(ζ)  # iterate twice
+    _XY(ζ)
+    _profile(ζ)
+
+
+@ti.kernel  # for ComputeCalibration
+def tiTilde(n: ti.i32, m: ti.i32):
+    _tilde(n, m)
+
+
+@ti.kernel
+def tiXYZ(n: ti.i32, m: ti.i32, nz: ti.i32):
+    _XY(n * m)
+    _XY(n * m)
+    _profile(n * m)
+    _tilde(n, m)
+    __Z(n, m, nz)
+
+
+# load data into taichi scope
+# @return number of beads, number of images
+def load(beads, imgs):
+    n = len(beads)
+    m = len(imgs)
+    maxζ = _im.shape[0]
+    if n * m &gt; maxζ:
+        raise Exception(&#34;Insufficient Capacity&#34;)
+    im = []
+    p = []
+    for b in beads:  # n
+        for img in imgs:  # m
+            x = int(b.x)
+            y = int(b.y)
+            im.append(img[y - R - 5 : y + R + 5, x - R - 5 : x + R + 5])
+            p.append([b.x - x, b.y - y, 0])
+    im = np.pad(np.array(im, dtype=np.int32), ((0, maxζ - n * m), (0, 0), (0, 0)))
+    p = np.pad(np.array(p, dtype=np.float32), ((0, maxζ - n * m), (0, 0)))
+    _im.from_numpy(im)
+    _p.from_numpy(p)
+    return n, m
+
+
+&#34;&#34;&#34;
+Calculate XY Position
+@param beads: list of beads
+@param imgs: list of 2d array of image data
+@return: [Bead0 Trace, Bead1 Trace, ...]
+&#34;&#34;&#34;
+
+
+def XY(beads, imgs):
+    if len(beads) == 0:
+        return
+    n, m = load(beads, imgs)
+    tiProfile(n * m)  # compute x, y, I in taichi scope
+    p = _p.to_numpy()
+    I = _I.to_numpy()
+    bp = []
+    for b in beads:
+        bp.append([int(b.x), int(b.y)])
+    res = []
+    for i in range(n):
+        res.append([])
+        for j in range(m):
+            b = beads[i]
+            μ = i * m + j
+            b.x = bp[i][0] + p[μ][0]
+            b.y = bp[i][1] + p[μ][1]
+            b.profile = I[μ]
+            res[i].append([b.x, b.y])
+    return res
+
+
+&#34;&#34;&#34;
+Calculate I and store
+@param beads: list of beads
+@param imgs: array of 2d array of image data
+@param z: z position
+&#34;&#34;&#34;
+
+
+def Calibrate(beads, imgs, z):
+    if len(beads) == 0:
+        return
+    for b in beads:
+        b.l = []
+    for img in imgs:
+        XY(beads, [img])
+        for b in beads:
+            b.l.append(b.profile)
+    for b in beads:
+        b.Ic.append(np.average(b.l, axis=0))
+        b.Zc.append(z)
+
+
+&#34;&#34;&#34;
+Finalize calibration by computing phase etc.
+@param beads: list of beads
+&#34;&#34;&#34;
+
+
+def ComputeCalibration(beads):
+    global Nz
+    n = len(beads)
+    if n == 0:
+        return
+    Nz = len(beads[0].Zc)
+    maxn = _A.shape[0]
+    maxz = _Z.shape[0]
+    cp = []  # load calibration params
+    for b in beads:
+        b.Rc = []  # real part
+        b.Φc = []  # phase angle
+        b.Ac = []  # amplitude
+        cp.append([b.rf, b.w[0], b.w[1]])
+    cp = np.pad(cp, ((0, maxn - n), (0, 0)))
+    _cp.from_numpy(cp)
+    for z in range(Nz):
+        I = []
+        for i in range(_I.shape[0]):
+            if i &lt; n:
+                I.append(beads[i].Ic[z])
+            else:
+                I.append(np.zeros(Nr))
+        _I.from_numpy(np.array(I, dtype=np.float32))
+        tiTilde(n, 1)
+        I = _I.to_numpy()
+        J = _J.to_numpy()
+        for i in range(n):
+            b = beads[i]
+            b.Rc.append(I[i])
+            b.Φc.append(np.arctan2(J[i], I[i]))
+            b.Ac.append(np.sqrt(I[i] ** 2 + J[i] ** 2))
+    Zc = []
+    Φc = []
+    Ac = []
+    Rc = []
+    for b in beads:
+        b.Rc = np.array(b.Rc)
+        b.Ac = np.array(b.Ac)
+        b.Φc = np.array(b.Φc)
+        Zc = b.Zc  # 1d array
+        Φc.append(b.Φc)
+        Ac.append(b.Ac)
+        Rc.append(b.Rc)
+    Zc = np.pad(Zc, (0, maxz - Nz))
+    Φc = np.pad(Φc, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    Ac = np.pad(Ac, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    Rc = np.pad(Rc, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    _Z.from_numpy(Zc.astype(np.float32))
+    _Φ.from_numpy(Φc.astype(np.float32))
+    _A.from_numpy(Ac.astype(np.float32))
+    _R.from_numpy(Rc.astype(np.float32))
+
+
+&#34;&#34;&#34;
+Calculate XYZ Position (cover XY)
+@param beads: list of beads
+@param imgs: list of 2d array of image data
+@return: [Bead0 Trace, Bead1 Trace, ...]
+&#34;&#34;&#34;
+
+
+def XYZ(beads, imgs):
+    if len(beads) == 0:
+        return
+    n, m = load(beads, imgs)
+    tiXYZ(n, m, Nz)
+    p = _p.to_numpy()
+    # p[np.abs(p) &gt; 10] = 0 # filter outlier
+    bp = []
+    for b in beads:
+        bp.append([int(b.x), int(b.y)])
+    res = []
+    for i in range(n):
+        res.append([])
+        for j in range(m):
+            b = beads[i]
+            μ = i * m + j
+            b.x = bp[i][0] + p[μ][0]
+            b.y = bp[i][1] + p[μ][1]
+            b.z = p[μ][2]
+            res[i].append([b.x, b.y, b.z])
+    return res</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="magnetic_tweezer.gpu_tracker.Calibrate"><code class="name flex">
+<span>def <span class="ident">Calibrate</span></span>(<span>beads, imgs, z)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Calibrate(beads, imgs, z):
+    if len(beads) == 0:
+        return
+    for b in beads:
+        b.l = []
+    for img in imgs:
+        XY(beads, [img])
+        for b in beads:
+            b.l.append(b.profile)
+    for b in beads:
+        b.Ic.append(np.average(b.l, axis=0))
+        b.Zc.append(z)</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.ComputeCalibration"><code class="name flex">
+<span>def <span class="ident">ComputeCalibration</span></span>(<span>beads)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ComputeCalibration(beads):
+    global Nz
+    n = len(beads)
+    if n == 0:
+        return
+    Nz = len(beads[0].Zc)
+    maxn = _A.shape[0]
+    maxz = _Z.shape[0]
+    cp = []  # load calibration params
+    for b in beads:
+        b.Rc = []  # real part
+        b.Φc = []  # phase angle
+        b.Ac = []  # amplitude
+        cp.append([b.rf, b.w[0], b.w[1]])
+    cp = np.pad(cp, ((0, maxn - n), (0, 0)))
+    _cp.from_numpy(cp)
+    for z in range(Nz):
+        I = []
+        for i in range(_I.shape[0]):
+            if i &lt; n:
+                I.append(beads[i].Ic[z])
+            else:
+                I.append(np.zeros(Nr))
+        _I.from_numpy(np.array(I, dtype=np.float32))
+        tiTilde(n, 1)
+        I = _I.to_numpy()
+        J = _J.to_numpy()
+        for i in range(n):
+            b = beads[i]
+            b.Rc.append(I[i])
+            b.Φc.append(np.arctan2(J[i], I[i]))
+            b.Ac.append(np.sqrt(I[i] ** 2 + J[i] ** 2))
+    Zc = []
+    Φc = []
+    Ac = []
+    Rc = []
+    for b in beads:
+        b.Rc = np.array(b.Rc)
+        b.Ac = np.array(b.Ac)
+        b.Φc = np.array(b.Φc)
+        Zc = b.Zc  # 1d array
+        Φc.append(b.Φc)
+        Ac.append(b.Ac)
+        Rc.append(b.Rc)
+    Zc = np.pad(Zc, (0, maxz - Nz))
+    Φc = np.pad(Φc, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    Ac = np.pad(Ac, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    Rc = np.pad(Rc, ((0, maxn - n), (0, maxz - Nz), (0, 0)))
+    _Z.from_numpy(Zc.astype(np.float32))
+    _Φ.from_numpy(Φc.astype(np.float32))
+    _A.from_numpy(Ac.astype(np.float32))
+    _R.from_numpy(Rc.astype(np.float32))</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.SetParams"><code class="name flex">
+<span>def <span class="ident">SetParams</span></span>(<span>r=35, nr=80, nθ=80, maxn=30, maxm=2, maxz=100)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def SetParams(r=35, nr=80, nθ=80, maxn=30, maxm=2, maxz=100):
+    global R, L, Nr, Nθ, Fr, Fθ
+    R = r
+    L = r * 2
+    Nr = nr
+    Nθ = nθ
+    Fr = R / Nr
+    Fθ = 2 * np.pi / Nθ
+    maxζ = maxn * maxm
+    global _im, _p, _I, _J, _Z, _Φ, _A, _R, _cp, _Iq, _x, _cx
+    _im = ti.field(dtype=ti.i32, shape=(maxζ, L + 10, L + 10))  # img grid
+    _p = ti.field(dtype=ti.f64, shape=(maxζ, 3))  # points
+    _I = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # intensity
+    _J = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # imaginary part
+    _Z = ti.field(dtype=ti.f64, shape=(maxz))  # calibration z
+    _Φ = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration angle
+    _A = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration amplitude
+    _R = ti.field(dtype=ti.f64, shape=(maxn, maxz, Nr))  # calibration real
+    _cp = ti.field(dtype=ti.i32, shape=(maxn, 3))  # calibration params
+    # caches
+    _Iq = ti.field(dtype=ti.f64, shape=(maxζ, Nr))  # fourier space
+    _x = ti.field(dtype=ti.f64, shape=(maxζ, L))
+    _cx = ti.field(dtype=ti.f64, shape=(maxζ, 50))</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.XY"><code class="name flex">
+<span>def <span class="ident">XY</span></span>(<span>beads, imgs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def XY(beads, imgs):
+    if len(beads) == 0:
+        return
+    n, m = load(beads, imgs)
+    tiProfile(n * m)  # compute x, y, I in taichi scope
+    p = _p.to_numpy()
+    I = _I.to_numpy()
+    bp = []
+    for b in beads:
+        bp.append([int(b.x), int(b.y)])
+    res = []
+    for i in range(n):
+        res.append([])
+        for j in range(m):
+            b = beads[i]
+            μ = i * m + j
+            b.x = bp[i][0] + p[μ][0]
+            b.y = bp[i][1] + p[μ][1]
+            b.profile = I[μ]
+            res[i].append([b.x, b.y])
+    return res</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.XYZ"><code class="name flex">
+<span>def <span class="ident">XYZ</span></span>(<span>beads, imgs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def XYZ(beads, imgs):
+    if len(beads) == 0:
+        return
+    n, m = load(beads, imgs)
+    tiXYZ(n, m, Nz)
+    p = _p.to_numpy()
+    # p[np.abs(p) &gt; 10] = 0 # filter outlier
+    bp = []
+    for b in beads:
+        bp.append([int(b.x), int(b.y)])
+    res = []
+    for i in range(n):
+        res.append([])
+        for j in range(m):
+            b = beads[i]
+            μ = i * m + j
+            b.x = bp[i][0] + p[μ][0]
+            b.y = bp[i][1] + p[μ][1]
+            b.z = p[μ][2]
+            res[i].append([b.x, b.y, b.z])
+    return res</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>beads, imgs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load(beads, imgs):
+    n = len(beads)
+    m = len(imgs)
+    maxζ = _im.shape[0]
+    if n * m &gt; maxζ:
+        raise Exception(&#34;Insufficient Capacity&#34;)
+    im = []
+    p = []
+    for b in beads:  # n
+        for img in imgs:  # m
+            x = int(b.x)
+            y = int(b.y)
+            im.append(img[y - R - 5 : y + R + 5, x - R - 5 : x + R + 5])
+            p.append([b.x - x, b.y - y, 0])
+    im = np.pad(np.array(im, dtype=np.int32), ((0, maxζ - n * m), (0, 0), (0, 0)))
+    p = np.pad(np.array(p, dtype=np.float32), ((0, maxζ - n * m), (0, 0)))
+    _im.from_numpy(im)
+    _p.from_numpy(p)
+    return n, m</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.tiProfile"><code class="name flex">
+<span>def <span class="ident">tiProfile</span></span>(<span>ζ: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@ti.kernel  # XY &amp; profile
+def tiProfile(ζ: ti.i32):
+    _XY(ζ)  # iterate twice
+    _XY(ζ)
+    _profile(ζ)</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.tiTilde"><code class="name flex">
+<span>def <span class="ident">tiTilde</span></span>(<span>n: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>, m: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@ti.kernel  # for ComputeCalibration
+def tiTilde(n: ti.i32, m: ti.i32):
+    _tilde(n, m)</code></pre>
+</details>
+</dd>
+<dt id="magnetic_tweezer.gpu_tracker.tiXYZ"><code class="name flex">
+<span>def <span class="ident">tiXYZ</span></span>(<span>n: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>, m: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>, nz: <taichi._lib.core.taichi_python.DataType object at 0x00000155EA7EC0F0>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@ti.kernel
+def tiXYZ(n: ti.i32, m: ti.i32, nz: ti.i32):
+    _XY(n * m)
+    _XY(n * m)
+    _profile(n * m)
+    _tilde(n, m)
+    __Z(n, m, nz)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="magnetic_tweezer" href="index.html">magnetic_tweezer</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="magnetic_tweezer.gpu_tracker.Calibrate" href="#magnetic_tweezer.gpu_tracker.Calibrate">Calibrate</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.ComputeCalibration" href="#magnetic_tweezer.gpu_tracker.ComputeCalibration">ComputeCalibration</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.SetParams" href="#magnetic_tweezer.gpu_tracker.SetParams">SetParams</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.XY" href="#magnetic_tweezer.gpu_tracker.XY">XY</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.XYZ" href="#magnetic_tweezer.gpu_tracker.XYZ">XYZ</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.load" href="#magnetic_tweezer.gpu_tracker.load">load</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.tiProfile" href="#magnetic_tweezer.gpu_tracker.tiProfile">tiProfile</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.tiTilde" href="#magnetic_tweezer.gpu_tracker.tiTilde">tiTilde</a></code></li>
+<li><code><a title="magnetic_tweezer.gpu_tracker.tiXYZ" href="#magnetic_tweezer.gpu_tracker.tiXYZ">tiXYZ</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

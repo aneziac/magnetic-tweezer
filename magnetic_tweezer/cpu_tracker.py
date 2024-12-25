@@ -73,6 +73,9 @@ def bilinear_interpolate(im: np.ndarray, x: np.float64, y: np.float64) -> np.flo
 
     Returns:
         np.float64: Result of the sampling
+
+    Raises:
+        ValueError: When the target coordinate is out of bounds of `im`
     """
     # x and y coordinates of the samples
     x0 = x.astype(int)
@@ -87,12 +90,15 @@ def bilinear_interpolate(im: np.ndarray, x: np.float64, y: np.float64) -> np.flo
     yl = y - y0
 
     # perform interpolation
-    return (
-        xu * yu * im[y0, x0] +
-        xu * yl * im[y1, x0] +
-        xl * yu * im[y0, x1] +
-        xl * yl * im[y1, x1]
-    )
+    try:
+        return (
+            xu * yu * im[y0, x0] +
+            xu * yl * im[y1, x0] +
+            xl * yu * im[y0, x1] +
+            xl * yl * im[y1, x1]
+        )
+    except IndexError:
+        raise ValueError('Bilinear interpolation target out of bounds')
 
 
 def profile(beads, img):
